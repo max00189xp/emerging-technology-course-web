@@ -82,7 +82,8 @@ body{display:flex;flex-direction:column;background:#f5f8ff;color:#18305f;font-fa
       let documentHTML = course.html;
       // srcdoc inherits the host origin; video diagnostics must inspect the real host protocol.
       if (id === 'twin') documentHTML = documentHTML.replaceAll('location.protocol','parent.location.protocol').replaceAll('location.origin','parent.location.origin');
-      frame.srcdoc = documentHTML.replace(/<head\b[^>]*>/i,'$&<base href="about:srcdoc">');
+      const seed = '<script>history.replaceState(null,"","about:srcdoc"+'+JSON.stringify(initialHash || '')+');<'+'/script>';
+      frame.srcdoc = documentHTML.replace(/<head\b[^>]*>/i,match=>match+'<base href="about:srcdoc">'+seed);
     } else {
       frame.hidden = false;
       if (requestedHash && frame.contentDocument?.querySelector('.np-root')) {
