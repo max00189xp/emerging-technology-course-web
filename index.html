@@ -79,7 +79,10 @@ body{display:flex;flex-direction:column;background:#f5f8ff;color:#18305f;font-fa
       });
       frames.set(id,frame);
       document.getElementById('course-content').append(frame);
-      frame.srcdoc = course.html.replace(/<head\b[^>]*>/i,'$&<base href="about:srcdoc">');
+      let documentHTML = course.html;
+      // srcdoc inherits the host origin; video diagnostics must inspect the real host protocol.
+      if (id === 'twin') documentHTML = documentHTML.replaceAll('location.protocol','parent.location.protocol').replaceAll('location.origin','parent.location.origin');
+      frame.srcdoc = documentHTML.replace(/<head\b[^>]*>/i,'$&<base href="about:srcdoc">');
     } else {
       frame.hidden = false;
       if (requestedHash && frame.contentDocument?.querySelector('.np-root')) {
